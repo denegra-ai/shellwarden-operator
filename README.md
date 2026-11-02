@@ -60,6 +60,23 @@ openshell sandbox create -- sh -c 'echo hello from a sandbox'
 
 Everything changed is listed in [helm-charts/PATCHES.md](helm-charts/PATCHES.md).
 
+## Running OpenShell for many teams or customers
+
+Shellwarden installs OpenShell and keeps it running. It does not decide who may use it, what that
+costs, or what data an agent may send to a model. Denegra builds two commercial products for that
+layer. They are optional; Shellwarden works the same without them.
+
+- **Denegra TenantTab** runs on the same OpenShift cluster and sells "agent sandboxes" to
+  tenants. Each tenant gets its own `OpenShellWorkspace`, its users mapped from your identity
+  provider, quotas, and usage on its invoice. An agent's model calls go through TenantTab's
+  model gateway with the tenant's key, so the agent never sees the key and every token is
+  metered. TenantTab is Red Hat certified and listed in the Red Hat Ecosystem Catalog.
+- **Denegra Derbent** sits between agents and models and masks personal data before a prompt
+  leaves your network (KVKK and GDPR). Point an OpenShell provider profile at Derbent instead of
+  the model.
+
+14-day trial and contact: https://denegra.ai/trial
+
 ## Develop
 
 Everything runs in Docker; `hack/make.sh <target>` runs a target in the tools image when the host
