@@ -1,0 +1,252 @@
+# The hand-written part of the ClusterServiceVersion. make bundle (hack/gen-bundle.py) adds the
+# install strategy (from config/rbac and config/manager), the owned CRDs' versions, alm-examples
+# (from config/samples), relatedImages, the icon, createdAt, and the Agent Sandbox variant.
+# Placeholders in CAPITALS are filled in by the generator.
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  name: shellwarden-operator.vVERSION
+  annotations:
+    capabilities: Seamless Upgrades
+    categories: AI/Machine Learning, Security
+    containerImage: IMG
+    createdAt: CREATED_AT
+    description: Installs and upgrades NVIDIA OpenShell, the runtime that runs AI agents in kernel-confined sandboxes. Community project.
+    repository: https://github.com/denegra-ai/shellwarden-operator
+    support: Denegra (community)
+    operatorframework.io/suggested-namespace: shellwarden-operator
+    operatorhub.io/ui-metadata-max-k8s-version: "1.37"
+    features.operators.openshift.io/disconnected: "true"
+    features.operators.openshift.io/fips-compliant: "false"
+    features.operators.openshift.io/proxy-aware: "false"
+    features.operators.openshift.io/tls-profiles: "false"
+    features.operators.openshift.io/token-auth-aws: "false"
+    features.operators.openshift.io/token-auth-azure: "false"
+    features.operators.openshift.io/token-auth-gcp: "false"
+    features.operators.openshift.io/cnf: "false"
+    features.operators.openshift.io/cni: "false"
+    features.operators.openshift.io/csi: "false"
+  labels:
+    operatorframework.io/arch.amd64: supported
+    operatorframework.io/os.linux: supported
+spec:
+  displayName: Denegra Shellwarden for NVIDIA OpenShell
+  version: VERSION
+  minKubeVersion: 1.29.0
+  maturity: alpha
+  provider:
+    name: Denegra
+    url: https://denegra.ai
+  maintainers:
+    - name: Denegra open source
+      email: opensource@denegra.ai
+  links:
+    - name: Source and documentation
+      url: https://github.com/denegra-ai/shellwarden-operator
+    - name: NVIDIA OpenShell
+      url: https://github.com/NVIDIA/OpenShell
+    - name: Agent Sandbox (kubernetes-sigs)
+      url: https://github.com/kubernetes-sigs/agent-sandbox
+  keywords:
+    - openshell
+    - ai agents
+    - agent sandbox
+    - sandbox
+    - landlock
+    - coding agents
+    - llm
+    - security
+  installModes:
+    - type: OwnNamespace
+      supported: false
+    - type: SingleNamespace
+      supported: false
+    - type: MultiNamespace
+      supported: false
+    - type: AllNamespaces
+      supported: true
+  customresourcedefinitions:
+    owned:
+      - name: openshells.openshell.denegra.ai
+        kind: OpenShell
+        version: v1alpha1
+        displayName: OpenShell
+        description: An NVIDIA OpenShell install (gateway and sandbox defaults). Create one per cluster.
+        resources:
+          - {kind: StatefulSet, version: v1}
+          - {kind: Deployment, version: v1}
+          - {kind: Service, version: v1}
+          - {kind: Secret, version: v1}
+          - {kind: ConfigMap, version: v1}
+          - {kind: Job, version: v1}
+          - {kind: NetworkPolicy, version: v1}
+          - {kind: ServiceAccount, version: v1}
+          - {kind: Role, version: v1}
+          - {kind: RoleBinding, version: v1}
+          - {kind: ClusterRole, version: v1}
+          - {kind: ClusterRoleBinding, version: v1}
+          - {kind: Route, version: v1}
+        specDescriptors:
+          - path: server
+            displayName: Gateway server
+            description: Gateway settings (the chart's server values).
+          - path: networkPolicy
+            displayName: Network policy
+            description: Sandbox SSH ingress policy.
+          - path: global
+            displayName: Image defaults
+            description: Registry and pull policy for all OpenShell images.
+            x-descriptors: ['urn:alm:descriptor:com.tectonic.ui:advanced']
+          - path: server.telemetryEnabled
+            displayName: Telemetry to NVIDIA
+            description: Send OpenShell's anonymous usage telemetry to NVIDIA. Off by default.
+            x-descriptors: ['urn:alm:descriptor:com.tectonic.ui:booleanSwitch']
+          - path: server.logLevel
+            displayName: Log level
+            x-descriptors: ['urn:alm:descriptor:com.tectonic.ui:select:trace', 'urn:alm:descriptor:com.tectonic.ui:select:debug', 'urn:alm:descriptor:com.tectonic.ui:select:info', 'urn:alm:descriptor:com.tectonic.ui:select:warn', 'urn:alm:descriptor:com.tectonic.ui:select:error']
+          - path: server.drivers.kubernetes.workspaceMode
+            displayName: Workspace mode
+            description: "shared: all sandboxes in one namespace. managed: a namespace per workspace. operator: namespaces the platform prepares."
+            x-descriptors: ['urn:alm:descriptor:com.tectonic.ui:select:shared', 'urn:alm:descriptor:com.tectonic.ui:select:managed', 'urn:alm:descriptor:com.tectonic.ui:select:operator']
+          - path: server.drivers.kubernetes.operatorNamespaceLabel
+            displayName: Workspace namespace label
+            description: In operator mode, the label selector of the namespaces the gateway may use.
+            x-descriptors: ['urn:alm:descriptor:com.tectonic.ui:text']
+          - path: networkPolicy.enabled
+            displayName: Restrict sandbox SSH to the gateway
+            x-descriptors: ['urn:alm:descriptor:com.tectonic.ui:booleanSwitch']
+          - path: global.image.registry
+            displayName: Image registry
+            description: Registry and path prefix of the OpenShell images, for a mirror. Digests are kept.
+            x-descriptors: ['urn:alm:descriptor:com.tectonic.ui:text', 'urn:alm:descriptor:com.tectonic.ui:advanced']
+          - path: server.dataStorageClass
+            displayName: Gateway database StorageClass
+            x-descriptors: ['urn:alm:descriptor:io.kubernetes:StorageClass', 'urn:alm:descriptor:com.tectonic.ui:advanced']
+          - path: server.workspaceStorageClass
+            displayName: Sandbox workspace StorageClass
+            x-descriptors: ['urn:alm:descriptor:io.kubernetes:StorageClass', 'urn:alm:descriptor:com.tectonic.ui:advanced']
+          - path: openshiftRoute.enabled
+            displayName: Expose with an OpenShift Route
+            x-descriptors: ['urn:alm:descriptor:com.tectonic.ui:booleanSwitch', 'urn:alm:descriptor:com.tectonic.ui:advanced']
+          - path: openshiftRoute.host
+            displayName: Route host
+            x-descriptors: ['urn:alm:descriptor:com.tectonic.ui:text', 'urn:alm:descriptor:com.tectonic.ui:advanced']
+          - path: server.otlp.endpoint
+            displayName: OTLP endpoint for traces
+            x-descriptors: ['urn:alm:descriptor:com.tectonic.ui:text', 'urn:alm:descriptor:com.tectonic.ui:advanced']
+        statusDescriptors:
+          - path: conditions
+            displayName: Conditions
+            x-descriptors: ['urn:alm:descriptor:io.kubernetes.conditions']
+          - path: deployedRelease
+            displayName: Deployed release
+            x-descriptors: ['urn:alm:descriptor:com.tectonic.ui:text']
+      - name: openshellworkspaces.openshell.denegra.ai
+        kind: OpenShellWorkspace
+        version: v1alpha1
+        displayName: OpenShell Workspace
+        description: Prepares a namespace for OpenShell sandboxes in operator workspace mode.
+        resources:
+          - {kind: ServiceAccount, version: v1}
+          - {kind: Role, version: v1}
+          - {kind: RoleBinding, version: v1}
+          - {kind: NetworkPolicy, version: v1}
+        specDescriptors:
+          - path: gateway
+            displayName: Gateway
+            description: The OpenShell gateway that runs sandboxes in this namespace.
+          - path: networkPolicy
+            displayName: Network policy
+            description: Sandbox SSH ingress policy.
+          - path: gateway.serviceAccount.name
+            displayName: Gateway ServiceAccount
+            x-descriptors: ['urn:alm:descriptor:com.tectonic.ui:text']
+          - path: gateway.serviceAccount.namespace
+            displayName: Gateway namespace
+            x-descriptors: ['urn:alm:descriptor:io.kubernetes:Namespace']
+          - path: networkPolicy.enabled
+            displayName: Restrict sandbox SSH to the gateway
+            x-descriptors: ['urn:alm:descriptor:com.tectonic.ui:booleanSwitch']
+        statusDescriptors:
+          - path: conditions
+            displayName: Conditions
+            x-descriptors: ['urn:alm:descriptor:io.kubernetes.conditions']
+          - path: deployedRelease
+            displayName: Deployed release
+            x-descriptors: ['urn:alm:descriptor:com.tectonic.ui:text']
+  install:
+    strategy: deployment
+    spec:
+      clusterPermissions: []
+      permissions: []
+      deployments: []
+  description: |
+    Denegra Shellwarden installs [NVIDIA OpenShell](https://github.com/NVIDIA/OpenShell) and keeps it upgraded.
+    OpenShell is an open-source (Apache-2.0) runtime that runs autonomous AI agents, such as
+    coding agents, in sandboxes: Landlock and seccomp confine each agent, every network
+    connection goes through a supervisor that checks it against a policy, and credentials are
+    injected only into approved requests, so the agent never holds them.
+
+    OpenShell ships a Helm chart. This operator installs that chart, pinned and tested, from one
+    `OpenShell` resource, and lets OLM manage upgrades.
+
+    **This is a community project by Denegra. It is not made, endorsed or supported by NVIDIA.**
+
+    ### What it installs
+
+    | Version | |
+    |---|---|
+    | NVIDIA OpenShell | OPENSHELL_VERSION |
+    | Agent Sandbox (kubernetes-sigs) | AGENT_SANDBOX_VERSION |
+
+    AGENT_SANDBOX_NOTE
+
+    ### Before you install
+
+    * **Linux kernel with Landlock ABI 3 or later** (6.2-class) and seccomp user notification on
+      the nodes that run sandboxes.
+    * **OpenShift 4.19 or later.** The RHCOS kernels of 4.16 to 4.18 have no Landlock.
+      Everything runs under the `restricted-v2` SCC; the operator detects OpenShift and leaves
+      pod user IDs to the SCC.
+    * **A network plugin that enforces NetworkPolicy** (OVN-Kubernetes, Calico, Cilium). The
+      sandbox's network fence is a NetworkPolicy.
+    * A default StorageClass with block storage, or set `server.dataStorageClass`.
+
+    ### Quick start
+
+    Create the namespace `openshell` and, in it:
+
+    ```yaml
+    apiVersion: openshell.denegra.ai/v1alpha1
+    kind: OpenShell
+    metadata:
+      name: openshell
+    spec:
+      server:
+        telemetryEnabled: false
+    ```
+
+    `spec` takes the values of the upstream chart, so OpenShell's own Kubernetes documentation
+    applies as written. Then use the `openshell` CLI against the gateway (client certificate in
+    the Secret `openshell-client-tls`) to create sandboxes.
+
+    For a platform with many teams, set `server.drivers.kubernetes.workspaceMode: operator` and an
+    `operatorNamespaceLabel`, then create an `OpenShellWorkspace` in each labelled namespace.
+
+    ### Defaults that differ from the upstream chart
+
+    * **Telemetry to NVIDIA is off** unless `server.telemetryEnabled: true`.
+    * **Images are pinned by digest.** For a mirror, set `global.image.registry` (for example
+      `mirror.example.com/nvidia`); on OpenShift an ImageDigestMirrorSet needs no change here.
+
+    ### Upgrade notes
+
+    OpenShell is before 1.0: it releases weekly, supports the latest two minor versions, and its
+    Kubernetes support is marked Experimental upstream. This operator follows upstream minor
+    releases on the `alpha` channel and is tested by installing the previous version and
+    upgrading. Read OpenShell's release notes before upgrading production gateways.
+
+    NVIDIA is a trademark of NVIDIA Corporation. Other names may be trademarks of their owners.
+  icon:
+    - base64data: ICON_BASE64
+      mediatype: image/svg+xml

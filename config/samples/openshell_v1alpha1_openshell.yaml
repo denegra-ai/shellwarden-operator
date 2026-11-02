@@ -1,0 +1,13 @@
+apiVersion: openshell.denegra.ai/v1alpha1
+kind: OpenShell
+metadata:
+  name: openshell
+spec:
+  server:
+    telemetryEnabled: false
+    logLevel: info
+    drivers:
+      kubernetes:
+        workspaceMode: shared
+  networkPolicy:
+    enabled: true

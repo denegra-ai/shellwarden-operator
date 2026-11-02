@@ -1,0 +1,13 @@
+# A one-bundle catalog for local OLM tests (make catalog-build fills in BUNDLE_IMG, VERSION).
+schema: olm.template.basic
+entries:
+  - schema: olm.package
+    name: shellwarden-operator
+    defaultChannel: alpha
+  - schema: olm.channel
+    package: shellwarden-operator
+    name: alpha
+    entries:
+      - name: shellwarden-operator.vVERSION
+  - schema: olm.bundle
+    image: BUNDLE_IMG

@@ -1,0 +1,11 @@
+apiVersion: openshell.denegra.ai/v1alpha1
+kind: OpenShellWorkspace
+metadata:
+  name: workspace
+spec:
+  gateway:
+    serviceAccount:
+      name: openshell
+      namespace: openshell
+  networkPolicy:
+    enabled: true

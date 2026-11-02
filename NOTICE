@@ -1,0 +1,24 @@
+Denegra Shellwarden for NVIDIA OpenShell (shellwarden-operator)
+Copyright 2026 Denegra
+
+This product is licensed under the Apache License, Version 2.0 (LICENSE).
+
+It is a community project. It is not made, endorsed or supported by NVIDIA Corporation.
+NVIDIA is a trademark and/or registered trademark of NVIDIA Corporation in the U.S. and other
+countries. Other company and product names may be trademarks of the respective companies with
+which they are associated.
+
+It includes, unchanged except for the default values listed in helm-charts/PATCHES.md:
+
+- The OpenShell Helm charts (helm-charts/openshell, helm-charts/openshell-workspace),
+  Copyright (c) 2025-2026 NVIDIA CORPORATION & AFFILIATES, Apache License 2.0
+  (third_party/OpenShell-LICENSE). https://github.com/NVIDIA/OpenShell
+
+The OpenShift bundle variant also includes, unchanged:
+
+- The Agent Sandbox CustomResourceDefinition and controller manifest
+  (config/agent-sandbox), Copyright The Kubernetes Authors, Apache License 2.0
+  (third_party/agent-sandbox-LICENSE). https://github.com/kubernetes-sigs/agent-sandbox
+
+The operator image contains operator-sdk's helm-operator binary, Copyright The Operator-SDK
+Authors, Apache License 2.0. https://github.com/operator-framework/operator-sdk

@@ -1,0 +1,64 @@
+# The operator Deployment. make bundle copies its spec into the CSV and fills in IMG.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shellwarden-operator
+  labels:
+    app.kubernetes.io/name: shellwarden-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: shellwarden-operator
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: shellwarden-operator
+      annotations:
+        kubectl.kubernetes.io/default-container: manager
+    spec:
+      serviceAccountName: shellwarden-operator
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: manager
+          image: IMG
+          args:
+            - --leader-elect
+            - --leader-election-id=shellwarden-operator
+            - --health-probe-bind-address=:8081
+            - --metrics-bind-address=:8080
+          env:
+            # Empty: entrypoint.sh detects OpenShift. Set openshift or kubernetes to decide.
+            - name: SHELLWARDEN_PLATFORM
+              value: ""
+          ports:
+            - name: metrics
+              containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop: [ALL]
+      terminationGracePeriodSeconds: 10

@@ -1,0 +1,14 @@
+# What the operator reconciles on OpenShift (hack/entrypoint.sh chooses this file when the
+# security.openshift.io API is served). The same as watches.yaml, except that OpenShell uses the
+# OpenShift copy of the chart, whose defaults pin no pod user or group IDs, so the restricted-v2
+# SCC assigns the namespace's range (helm-charts/PATCHES.md, item 4).
+---
+- group: openshell.denegra.ai
+  version: v1alpha1
+  kind: OpenShell
+  chart: helm-charts/openshell-openshift
+  dryRunOption: server
+- group: openshell.denegra.ai
+  version: v1alpha1
+  kind: OpenShellWorkspace
+  chart: helm-charts/openshell-workspace

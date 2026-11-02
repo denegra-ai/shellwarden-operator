@@ -1,0 +1,18 @@
+# What the operator reconciles on Kubernetes. On OpenShift, hack/entrypoint.sh picks
+# watches-openshift.yaml instead; keep the two files the same apart from overrideValues.
+#
+# Each resource's spec is the chart's values. Reconciling is `helm upgrade --install` on every
+# change, and a hand edit to an object the release owns is put back.
+---
+- group: openshell.denegra.ai
+  version: v1alpha1
+  kind: OpenShell
+  chart: helm-charts/openshell
+  # The chart keeps its generated key-encryption key by reading the live Secret with `lookup`.
+  # A client-side dry run cannot see the cluster, renders a new key every time, sees a change and
+  # upgrades again, forever. A server-side dry run sees the Secret.
+  dryRunOption: server
+- group: openshell.denegra.ai
+  version: v1alpha1
+  kind: OpenShellWorkspace
+  chart: helm-charts/openshell-workspace

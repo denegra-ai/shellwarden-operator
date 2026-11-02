@@ -1,0 +1,95 @@
+# The operator's permissions: one ServiceAccount, one ClusterRole (the CSV's clusterPermissions,
+# copied by make bundle) and a namespaced Role for leader election (the CSV's permissions).
+#
+# helm-operator creates and watches every object the two charts render, so it needs those kinds.
+# Kubernetes lets a subject grant only permissions it holds itself, so the ClusterRole also holds
+# every rule the gateway's ClusterRole and Roles grant (templates/clusterrole.yaml, role.yaml,
+# peer-role.yaml, credential-secrets-role.yaml, certgen.yaml in helm-charts/openshell, and
+# role.yaml in helm-charts/openshell-workspace). No wildcards, no escalate or bind.
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: shellwarden-operator
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: shellwarden-operator
+rules:
+  # The operator's own API.
+  - apiGroups: [openshell.denegra.ai]
+    resources: [openshells, openshellworkspaces]
+    verbs: [create, delete, get, list, patch, update, watch]
+  - apiGroups: [openshell.denegra.ai]
+    resources: [openshells/status, openshells/finalizers, openshellworkspaces/status, openshellworkspaces/finalizers]
+    verbs: [get, patch, update]
+  # Objects the charts create, and what the gateway's roles grant on them. Namespaces: the chart
+  # may create the credential namespace; managed workspace mode creates and deletes namespaces.
+  - apiGroups: [""]
+    resources: [configmaps, persistentvolumeclaims, pods, secrets, serviceaccounts, services]
+    verbs: [create, delete, get, list, patch, update, watch]
+  - apiGroups: [""]
+    resources: [namespaces]
+    verbs: [create, delete, get, list, patch, update, watch]
+  - apiGroups: [""]
+    resources: [events]
+    verbs: [create, get, list, patch, watch]
+  - apiGroups: [""]
+    resources: [nodes]
+    verbs: [get, list, watch]
+  - apiGroups: [apps]
+    resources: [deployments, statefulsets]
+    verbs: [create, delete, get, list, patch, update, watch]
+  - apiGroups: [batch]
+    resources: [jobs]
+    verbs: [create, delete, get, list, patch, update, watch]
+  - apiGroups: [policy]
+    resources: [poddisruptionbudgets]
+    verbs: [create, delete, get, list, patch, update, watch]
+  - apiGroups: [autoscaling]
+    resources: [horizontalpodautoscalers]
+    verbs: [create, delete, get, list, patch, update, watch]
+  - apiGroups: [networking.k8s.io]
+    resources: [networkpolicies]
+    verbs: [create, delete, get, list, patch, update, watch]
+  - apiGroups: [rbac.authorization.k8s.io]
+    resources: [clusterroles, clusterrolebindings, roles, rolebindings]
+    verbs: [create, delete, get, list, patch, update, watch]
+  - apiGroups: [authentication.k8s.io]
+    resources: [tokenreviews]
+    verbs: [create]
+  - apiGroups: [node.k8s.io]
+    resources: [runtimeclasses]
+    verbs: [get]
+  - apiGroups: [scheduling.k8s.io]
+    resources: [priorityclasses]
+    verbs: [get]
+  - apiGroups: [agents.x-k8s.io]
+    resources: [sandboxes, sandboxes/status]
+    verbs: [create, delete, get, list, patch, update, watch]
+  # Optional exposure and PKI the chart renders only when turned on in the resource.
+  - apiGroups: [route.openshift.io]
+    resources: [routes, routes/custom-host]
+    verbs: [create, delete, get, list, patch, update, watch]
+  - apiGroups: [gateway.networking.k8s.io]
+    resources: [gateways, grpcroutes, backendtlspolicies]
+    verbs: [create, delete, get, list, patch, update, watch]
+  - apiGroups: [cert-manager.io]
+    resources: [certificates, issuers]
+    verbs: [create, delete, get, list, patch, update, watch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: shellwarden-operator-leader-election
+rules:
+  - apiGroups: [coordination.k8s.io]
+    resources: [leases]
+    verbs: [create, get, list, patch, update, watch, delete]
+  - apiGroups: [""]
+    resources: [configmaps]
+    verbs: [create, get, list, patch, update, watch, delete]
+  - apiGroups: [""]
+    resources: [events]
+    verbs: [create, patch]
