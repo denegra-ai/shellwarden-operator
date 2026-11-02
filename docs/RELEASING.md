@@ -17,12 +17,8 @@ A release is an operator image, pinned by digest, and one bundle per community c
 Both community CIs pull the operator image anonymously, so it must be public. OpenShift's catalog
 builds the bundle image in its own pipeline; only the operator image is ours to push.
 
-```sh
-make docker-build IMG=ghcr.io/denegra-ai/shellwarden-operator:v$VERSION
-docker push ghcr.io/denegra-ai/shellwarden-operator:v$VERSION
-```
-
-Then pin it by digest in the Makefile (`IMG ?= ghcr.io/denegra-ai/shellwarden-operator@sha256:…`), so
+Run the `image` workflow (Actions → image → Run workflow, version `X.Y.Z`); it pushes
+`ghcr.io/denegra-ai/shellwarden-operator:vX.Y.Z` and prints the digest. Then pin it by digest in the Makefile (`IMG ?= ghcr.io/denegra-ai/shellwarden-operator@sha256:…`), so
 `features.operators.openshift.io/disconnected: "true"` holds, and regenerate the bundle.
 
 Before 1.0, build for arm64 too (`docker buildx build --platform linux/amd64,linux/arm64`; the
