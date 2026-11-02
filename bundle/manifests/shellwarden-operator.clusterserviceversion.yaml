@@ -5,8 +5,8 @@ metadata:
   annotations:
     capabilities: Seamless Upgrades
     categories: AI/Machine Learning, Security
-    containerImage: ghcr.io/denegra-ai/shellwarden-operator:v0.1.0
-    createdAt: '2026-11-02T14:45:45Z'
+    containerImage: ghcr.io/denegra-ai/shellwarden-operator@sha256:eda17f263dc797f324b0aeca843466349da8589158abc41724e687c113d80565
+    createdAt: '2026-11-02T17:39:49Z'
     description: Installs and upgrades NVIDIA OpenShell, the runtime that runs AI agents in kernel-confined sandboxes. Community project.
     repository: https://github.com/denegra-ai/shellwarden-operator
     support: Denegra (community)
@@ -624,7 +624,7 @@ spec:
                   type: RuntimeDefault
               containers:
               - name: manager
-                image: ghcr.io/denegra-ai/shellwarden-operator:v0.1.0
+                image: ghcr.io/denegra-ai/shellwarden-operator@sha256:eda17f263dc797f324b0aeca843466349da8589158abc41724e687c113d80565
                 args:
                 - --leader-elect
                 - --leader-election-id=shellwarden-operator
@@ -775,7 +775,7 @@ spec:
     mediatype: image/svg+xml
   relatedImages:
   - name: operator
-    image: ghcr.io/denegra-ai/shellwarden-operator:v0.1.0
+    image: ghcr.io/denegra-ai/shellwarden-operator@sha256:eda17f263dc797f324b0aeca843466349da8589158abc41724e687c113d80565
   - name: openshell-gateway
     image: ghcr.io/nvidia/openshell/gateway@sha256:f0b36dba21d282c52e498c25289658cfd6cd4f343b0069fde5609e25b002cdea
   - name: openshell-supervisor
