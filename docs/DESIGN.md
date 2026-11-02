@@ -105,8 +105,11 @@ Risks and the exit:
   controller. The docs say to remove the standalone controller first; OLM takes over the CRD.
 - `required`: agent-sandbox-operator 0.5.6 writes its webhook Secret into `agent-sandbox-system`
   whatever namespace OLM installs it in, and crash-loops when that namespace is missing (found in
-  the local OLM test, 2026-11-02). The CSV text tells users to create it first, until it is
-  fixed upstream.
+  the local OLM test, 2026-11-02). The 0.1.0 CSV text tells users to create it first.
+  agent-sandbox-operator 1.0.9 (OperatorHub.io, 2026-11-02) no longer runs that webhook (its
+  controller's `--webhook-namespace` and certificate code are gone), so the namespace is not needed
+  there; it serves only `v1beta1`, which is what this bundle requires and the controller the
+  `bundled` variant ships. The next release drops the note once an install against 1.0.9 passes.
 - When agent-sandbox-operator reaches community-operators-prod (best done by its maintainers;
   Denegra can ask), a minor release switches the OpenShift bundle to `required`.
 - The chart's own preflight stays on in both: if the Sandbox API is not served, the `OpenShell`
