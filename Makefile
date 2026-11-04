@@ -4,10 +4,10 @@
 # kind, python3 + PyYAML). Without them, run any target through the tools image:
 #   hack/make.sh <target>
 
-VERSION ?= 0.1.0
+VERSION ?= 0.1.1
 # The previous release this one replaces, and the range it may skip. Empty for the first release.
-REPLACES ?=
-SKIP_RANGE ?=
+REPLACES ?= shellwarden-operator.v0.1.0
+SKIP_RANGE ?= >=0.1.0 <0.1.1
 OPENSHELL_VERSION ?= 0.1.6
 OPENSHIFT_VERSIONS ?= v4.19
 # required: OLM installs kubernetes-sigs' Agent Sandbox Operator as a dependency (OperatorHub.io).
@@ -46,7 +46,7 @@ export KUBECONFIG
 DIST ?= dist
 PACKAGE = shellwarden-operator
 
-BUNDLE_ENV = VERSION=$(VERSION) IMG=$(IMG) REPLACES=$(REPLACES) SKIP_RANGE=$(SKIP_RANGE) \
+BUNDLE_ENV = VERSION=$(VERSION) IMG=$(IMG) REPLACES=$(REPLACES) SKIP_RANGE='$(SKIP_RANGE)' \
   OPENSHELL_VERSION=$(OPENSHELL_VERSION) OPENSHIFT_VERSIONS=$(OPENSHIFT_VERSIONS) \
   AGENT_SANDBOX=$(AGENT_SANDBOX) AGENT_SANDBOX_VERSION=$(AGENT_SANDBOX_VERSION) \
   AGENT_SANDBOX_IMG=$(AGENT_SANDBOX_IMG)
