@@ -9,7 +9,7 @@ operator that installs that chart, pinned and tested, from one `OpenShell` resou
 
 | This operator | NVIDIA OpenShell | Agent Sandbox (kubernetes-sigs) |
 |---|---|---|
-| 0.1.0 | 0.1.6 | v1.0.9 (bundled) / Agent Sandbox Operator (OperatorHub.io) |
+| 0.1.0, 0.1.1 | 0.1.6 | v1.0.9 (bundled) / Agent Sandbox Operator (OperatorHub.io) |
 
 Design and decisions: [docs/DESIGN.md](docs/DESIGN.md).
 

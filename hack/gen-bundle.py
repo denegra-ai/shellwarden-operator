@@ -174,13 +174,8 @@ def main() -> int:
         dump({"dependencies": [{"type": "olm.gvk", "value": {
             "group": "agents.x-k8s.io", "kind": "Sandbox", "version": "v1beta1"}}]},
              out / "metadata/dependencies.yaml")
-        # agent-sandbox-operator 0.5.6 writes its webhook Secret into agent-sandbox-system whatever
-        # namespace OLM installs it in, and crash-loops when that namespace is missing (seen on kind,
-        # 2026-11-02). Remove this once a fixed version is in the catalog.
         note = ("OpenShell needs the Agent Sandbox API (kubernetes-sigs). OLM installs the Agent Sandbox "
-                "Operator from the same catalog as a dependency. **Before installing, create the namespace "
-                "`agent-sandbox-system`**: Agent Sandbox Operator 0.5.6 stores its webhook certificate there "
-                "and does not start without it.")
+                "Operator from the same catalog as a dependency.")
 
     for entry in owned:
         if entry["name"].endswith(".openshell.denegra.ai"):

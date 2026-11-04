@@ -109,7 +109,8 @@ Risks and the exit:
   agent-sandbox-operator 1.0.9 (OperatorHub.io, 2026-11-02) no longer runs that webhook (its
   controller's `--webhook-namespace` and certificate code are gone), so the namespace is not needed
   there; it serves only `v1beta1`, which is what this bundle requires and the controller the
-  `bundled` variant ships. The next release drops the note once an install against 1.0.9 passes.
+  `bundled` variant ships. 0.1.1 drops the note: on kind (2026-11-04) OLM resolved 1.0.9 from the
+  OperatorHub.io catalog without that namespace, and the full e2e passed.
 - When agent-sandbox-operator reaches community-operators-prod (best done by its maintainers;
   Denegra can ask), a minor release switches the OpenShift bundle to `required`.
 - The chart's own preflight stays on in both: if the Sandbox API is not served, the `OpenShell`
@@ -140,7 +141,8 @@ Risks and the exit:
     denied (Landlock).
   - Spec changes, drift repair, `OpenShellWorkspace` and a stable Helm revision behaved as on kind.
   - `required`: OLM resolved agent-sandbox-operator 0.5.6 from the OperatorHub.io catalog
-    (`quay.io/operatorhubio/catalog`), with `agent-sandbox-system` created first.
+    (`quay.io/operatorhubio/catalog`), with `agent-sandbox-system` created first (1.0.9 does not
+    need it; see "Risks and the exit").
 - Exposure: `openshiftRoute.enabled` gives a passthrough Route (the gateway terminates its own
   TLS).
 - The operator's own pods: UBI 9 minimal, non-root, no UID pinned, `RuntimeDefault` seccomp,
