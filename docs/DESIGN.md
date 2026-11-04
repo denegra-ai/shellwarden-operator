@@ -141,7 +141,8 @@ Risks and the exit:
     denied (Landlock).
   - Spec changes, drift repair, `OpenShellWorkspace` and a stable Helm revision behaved as on kind.
   - `required`: OLM resolved agent-sandbox-operator 0.5.6 from the OperatorHub.io catalog
-    (`quay.io/operatorhubio/catalog`), with `agent-sandbox-system` created first.
+    (`quay.io/operatorhubio/catalog`), with `agent-sandbox-system` created first (1.0.9 does not
+    need it; see "Risks and the exit").
 - Exposure: `openshiftRoute.enabled` gives a passthrough Route (the gateway terminates its own
   TLS).
 - The operator's own pods: UBI 9 minimal, non-root, no UID pinned, `RuntimeDefault` seccomp,
