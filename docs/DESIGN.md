@@ -143,6 +143,10 @@ Risks and the exit:
   - `required`: OLM resolved agent-sandbox-operator 0.5.6 from the OperatorHub.io catalog
     (`quay.io/operatorhubio/catalog`), with `agent-sandbox-system` created first (1.0.9 does not
     need it; see "Risks and the exit").
+  - 0.1.1 as published (2026-11-08): installed from Red Hat's own `community-operators`
+    CatalogSource (`community-operator-index:v4.20`), not a lab catalog. The same checks passed.
+    Denegra TenantTab's agent sandboxes then ran on it in `operator` workspace mode: a tenant's
+    order, an agent's metered model calls, and removal.
 - Exposure: `openshiftRoute.enabled` gives a passthrough Route (the gateway terminates its own
   TLS).
 - The operator's own pods: UBI 9 minimal, non-root, no UID pinned, `RuntimeDefault` seccomp,
@@ -208,5 +212,5 @@ because it would join NVIDIA's product name to ours. Small unrelated GitHub proj
 - Postgres-backed HA gateway (works through `spec` values, not tested here).
 - cert-manager, Gateway API routes, Vault credential driver (values pass through, untested).
 - An OpenShift run on a multi-node cluster or on 4.19 itself (only CRC 4.20.5, single node, so far).
-- An upgrade between two operator versions (there is only 0.1.0).
+- An upgrade between two operator versions on OpenShift (0.1.0 → 0.1.1 was tested on kind only).
 - Arm64 operator image (the upstream images are multi-arch; ours is amd64 for now).
