@@ -4,24 +4,24 @@
 # kind, python3 + PyYAML). Without them, run any target through the tools image:
 #   hack/make.sh <target>
 
-VERSION ?= 0.1.1
+VERSION ?= 0.1.2
 # The previous release this one replaces, and the range it may skip. Empty for the first release.
-REPLACES ?= shellwarden-operator.v0.1.0
-SKIP_RANGE ?= >=0.1.0 <0.1.1
-OPENSHELL_VERSION ?= 0.1.6
+REPLACES ?= shellwarden-operator.v0.1.1
+SKIP_RANGE ?= >=0.1.0 <0.1.2
+OPENSHELL_VERSION ?= 0.1.8
 OPENSHIFT_VERSIONS ?= v4.19
 # required: OLM installs kubernetes-sigs' Agent Sandbox Operator as a dependency (OperatorHub.io).
 # bundled: the bundle carries the Agent Sandbox CRD and controller (OpenShift community catalog).
 AGENT_SANDBOX ?= bundled
-AGENT_SANDBOX_VERSION ?= v1.0.9
-AGENT_SANDBOX_IMG ?= registry.k8s.io/agent-sandbox/agent-sandbox-controller:v1.0.9@sha256:ef1a1a3076afc996e711c44b388fbb7ffb7cd6858953d7e685166b299d77bd38
+AGENT_SANDBOX_VERSION ?= v1.0.10
+AGENT_SANDBOX_IMG ?= registry.k8s.io/agent-sandbox/agent-sandbox-controller:v1.0.10@sha256:594f4853913bca2b336d0267fe0978445f1aaa5837ed23797e48e745c8d6b610
 
 # The digests make vendor pins into the gateway chart's values (helm-charts/PATCHES.md).
-GATEWAY_DIGEST ?= sha256:f0b36dba21d282c52e498c25289658cfd6cd4f343b0069fde5609e25b002cdea
-SUPERVISOR_DIGEST ?= sha256:ce859a7d77ee515d3fe0b3c7dc61286516f402eb1d25c761d806d9ae5ed96c0b
-SANDBOX_RUNTIME_DIGEST ?= sha256:1038eb5c1f191fa3c34684fd7041b891c78ec570979d487f36e06e08f91bfb63
+GATEWAY_DIGEST ?= sha256:d66352a54c680b652e5ddd7d19b9c1189568d18016f360b9b8c64014f13d89c4
+SUPERVISOR_DIGEST ?= sha256:deadeacfdba6d12ca27e538d0002696369d4de5a4fcad075ab503495503af9d1
+SANDBOX_RUNTIME_DIGEST ?= sha256:f0fe7dbf18d833acb5da99c405231124718f23b524aa8e3c0108e6f37530033b
 # nvcr.io/nvidia/base/ubuntu:24.04, OpenShell's default sandbox image.
-SANDBOX_BASE_DIGEST ?= sha256:d9461f428eea54e553add3a5158a0f245c6e1ea73efc59fff8e98e3d4a38e378
+SANDBOX_BASE_DIGEST ?= sha256:fef8f2708dbb85fbfcba6503d805397d89d9210f375362ff3b9f7888eb297ca5
 
 # Where images go. Nothing is pushed to a public registry by any target here; publishing is a
 # release step (docs/RELEASING.md). The lab targets use a local registry instead (LAB_*).
