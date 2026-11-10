@@ -52,7 +52,7 @@ BUNDLE_ENV = VERSION=$(VERSION) IMG=$(IMG) REPLACES=$(REPLACES) SKIP_RANGE='$(SK
   AGENT_SANDBOX_IMG=$(AGENT_SANDBOX_IMG)
 
 .PHONY: help tools vendor bundle validate docker-build bundle-build catalog-build \
-  lab-registry kind-up olm-install lab-images e2e scorecard kind-down lab-down community-dirs deploy undeploy
+  lab-registry kind-up olm-install lab-images e2e upgrade-e2e scorecard kind-down lab-down community-dirs deploy undeploy
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS=":.*?## "}; {printf "  %-16s %s\n", $$1, $$2}'
@@ -124,6 +124,18 @@ lab-images:
 e2e: kind-up olm-install lab-images ## Install from a local catalog on kind, start a sandbox, check the CR drives the release
 	CATALOG_IMG=$(LAB_REGISTRY)/$(PACKAGE)-catalog:v$(VERSION) VERSION=$(VERSION) LAB_REGISTRY=$(LAB_REGISTRY) \
 	  LAB_PUSH=$(LAB_PUSH) sh hack/e2e.sh
+
+# The release this one replaces, as its catalog publishes it. Run on a fresh cluster:
+#   make kind-down upgrade-e2e AGENT_SANDBOX=bundled|required
+PREVIOUS ?= $(REPLACES:$(PACKAGE).v%=%)
+upgrade-e2e: kind-up olm-install ## Upgrade the published PREVIOUS bundle to this one on kind, with a sandbox across it
+	$(MAKE) docker-build IMG=$(LAB_PUSH)/$(PACKAGE):v$(VERSION)
+	docker push $(LAB_PUSH)/$(PACKAGE):v$(VERSION)
+	$(MAKE) bundle-build IMG=$(LAB_REGISTRY)/$(PACKAGE):v$(VERSION) BUNDLE_IMG=$(LAB_PUSH)/$(PACKAGE)-bundle:v$(VERSION)-$(AGENT_SANDBOX)
+	docker push $(LAB_PUSH)/$(PACKAGE)-bundle:v$(VERSION)-$(AGENT_SANDBOX)
+	VERSION=$(VERSION) PREVIOUS=$(PREVIOUS) AGENT_SANDBOX=$(AGENT_SANDBOX) OPENSHELL_VERSION=$(OPENSHELL_VERSION) \
+	  LAB_REGISTRY=$(LAB_REGISTRY) LAB_PUSH=$(LAB_PUSH) sh hack/upgrade-e2e.sh
+	@$(MAKE) --no-print-directory bundle >/dev/null
 
 scorecard: bundle ## Run the bundle's scorecard tests on the kind cluster
 	kubectl create namespace scorecard --dry-run=client -o yaml | kubectl apply -f -

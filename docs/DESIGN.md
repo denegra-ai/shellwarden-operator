@@ -181,7 +181,8 @@ change Experimental interfaces within a patch.
   installed).
 - **Before each release:** install the previous bundle from a local catalog, create the CRs,
   start a sandbox, upgrade to the new bundle, and check the sandbox state survives (the gateway's
-  SQLite database lives on its PVC). `make e2e` runs the install half today.
+  SQLite database lives on its PVC). `make upgrade-e2e` does this on kind, from the previous
+  version as its catalog publishes it; `make e2e` tests a fresh install.
 - **Breaking upstream changes** (OpenShell already removed an inference route within 0.1.x) are
   called out in the CSV description's "Upgrade notes".
 
