@@ -147,6 +147,9 @@ Risks and the exit:
     CatalogSource (`community-operator-index:v4.20`), not a lab catalog. The same checks passed.
     Denegra TenantTab's agent sandboxes then ran on it in `operator` workspace mode: a tenant's
     order, an agent's metered model calls, and removal.
+  - 0.1.2 (2026-11-10): that 0.1.1 install upgraded in place to 0.1.2 through OLM. Every pod
+    stayed under `restricted-v2`, the sandbox started on 0.1.1 kept its pod, and a new sandbox's
+    write to `/etc` was denied.
 - Exposure: `openshiftRoute.enabled` gives a passthrough Route (the gateway terminates its own
   TLS).
 - The operator's own pods: UBI 9 minimal, non-root, no UID pinned, `RuntimeDefault` seccomp,
