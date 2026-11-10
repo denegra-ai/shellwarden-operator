@@ -27,7 +27,7 @@ SANDBOX_BASE_DIGEST ?= sha256:fef8f2708dbb85fbfcba6503d805397d89d9210f375362ff3b
 # release step (docs/RELEASING.md). The lab targets use a local registry instead (LAB_*).
 REGISTRY ?= ghcr.io/denegra-ai
 # The released image, pinned by digest (built by .github/workflows/image.yaml as v$(VERSION)).
-IMG ?= $(REGISTRY)/shellwarden-operator@sha256:d048bb8d7910cbce4dc2f0ac76c10a2b6952d96f3e9f9a417b32bb1601d71389
+IMG ?= $(REGISTRY)/shellwarden-operator@sha256:6d515c50e42f08186fdf5d1718c53af08424a451cd5dabbdac8c0f74f889555c
 BUNDLE_IMG ?= $(REGISTRY)/shellwarden-operator-bundle:v$(VERSION)
 CATALOG_IMG ?= $(REGISTRY)/shellwarden-operator-catalog:v$(VERSION)
 REVISION ?= $(shell git rev-parse HEAD 2>/dev/null)
