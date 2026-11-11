@@ -1,12 +1,12 @@
 apiVersion: operators.coreos.com/v1alpha1
 kind: ClusterServiceVersion
 metadata:
-  name: shellwarden-operator.v0.1.1
+  name: shellwarden-operator.v0.1.2
   annotations:
     capabilities: Seamless Upgrades
     categories: AI/Machine Learning, Security
-    containerImage: ghcr.io/denegra-ai/shellwarden-operator@sha256:d048bb8d7910cbce4dc2f0ac76c10a2b6952d96f3e9f9a417b32bb1601d71389
-    createdAt: '2026-11-04T09:13:23Z'
+    containerImage: ghcr.io/denegra-ai/shellwarden-operator@sha256:6d515c50e42f08186fdf5d1718c53af08424a451cd5dabbdac8c0f74f889555c
+    createdAt: '2026-11-10T21:00:24Z'
     description: Installs and upgrades NVIDIA OpenShell, the runtime that runs AI agents in kernel-confined sandboxes. Community project.
     repository: https://github.com/denegra-ai/shellwarden-operator
     support: Denegra (community)
@@ -22,7 +22,7 @@ metadata:
     features.operators.openshift.io/cnf: 'false'
     features.operators.openshift.io/cni: 'false'
     features.operators.openshift.io/csi: 'false'
-    olm.skipRange: '>=0.1.0 <0.1.1'
+    olm.skipRange: '>=0.1.0 <0.1.2'
     operators.operatorframework.io/internal-objects: '["sandboxes.agents.x-k8s.io"]'
     alm-examples: |-
       [
@@ -71,7 +71,7 @@ metadata:
     operatorframework.io/os.linux: supported
 spec:
   displayName: Denegra Shellwarden for NVIDIA OpenShell
-  version: 0.1.1
+  version: 0.1.2
   minKubeVersion: 1.29.0
   maturity: alpha
   provider:
@@ -625,7 +625,7 @@ spec:
                   type: RuntimeDefault
               containers:
               - name: manager
-                image: ghcr.io/denegra-ai/shellwarden-operator@sha256:d048bb8d7910cbce4dc2f0ac76c10a2b6952d96f3e9f9a417b32bb1601d71389
+                image: ghcr.io/denegra-ai/shellwarden-operator@sha256:6d515c50e42f08186fdf5d1718c53af08424a451cd5dabbdac8c0f74f889555c
                 args:
                 - --leader-elect
                 - --leader-election-id=shellwarden-operator
@@ -679,7 +679,7 @@ spec:
               serviceAccountName: agent-sandbox-controller
               containers:
               - name: agent-sandbox-controller
-                image: registry.k8s.io/agent-sandbox/agent-sandbox-controller:v1.0.9@sha256:ef1a1a3076afc996e711c44b388fbb7ffb7cd6858953d7e685166b299d77bd38
+                image: registry.k8s.io/agent-sandbox/agent-sandbox-controller:v1.0.10@sha256:594f4853913bca2b336d0267fe0978445f1aaa5837ed23797e48e745c8d6b610
                 args:
                 - --leader-elect=true
                 ports:
@@ -720,10 +720,10 @@ spec:
 
     | Version | |
     |---|---|
-    | NVIDIA OpenShell | 0.1.6 |
-    | Agent Sandbox (kubernetes-sigs) | v1.0.9 |
+    | NVIDIA OpenShell | 0.1.8 |
+    | Agent Sandbox (kubernetes-sigs) | v1.0.10 |
 
-    This bundle includes the Agent Sandbox CRD and controller (v1.0.9, kubernetes-sigs, Apache-2.0) that OpenShell needs. If Agent Sandbox is already installed with kubectl, remove its controller Deployment (namespace agent-sandbox-system) first.
+    This bundle includes the Agent Sandbox CRD and controller (v1.0.10, kubernetes-sigs, Apache-2.0) that OpenShell needs. If Agent Sandbox is already installed with kubectl, remove its controller Deployment (namespace agent-sandbox-system) first.
 
     ### Before you install
 
@@ -770,21 +770,25 @@ spec:
     releases on the `alpha` channel and is tested by installing the previous version and
     upgrading. Read OpenShell's release notes before upgrading production gateways.
 
+    * **0.1.2** (OpenShell 0.1.6 to 0.1.8): OpenShell writes OCSF 1.8.0 records only since 0.1.7.
+      A log pipeline that parsed 1.1 or 1.3 records needs updating; `server.ocsfLog.schemaVersion`
+      is now ignored.
+
     NVIDIA is a trademark of NVIDIA Corporation. Other names may be trademarks of their owners.
   icon:
   - base64data: PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij48cmVjdCB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgcng9IjI0IiBmaWxsPSIjMGIzZDkxIi8+PHBhdGggZD0iTTY0IDE4Yy0yNCAwLTQyIDIwLTQyIDQ0IDAgMzAgMjYgNDggNDIgNDhzNDItMTggNDItNDhjMC0yNC0xOC00NC00Mi00NHoiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI3Ii8+PHBhdGggZD0iTTY0IDMwdjc2TTQyIDQwYzggMTAgOCA1MiAwIDYyTTg2IDQwYy04IDEwLTggNTIgMCA2MiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxyZWN0IHg9IjUwIiB5PSI1NiIgd2lkdGg9IjI4IiBoZWlnaHQ9IjIyIiByeD0iNCIgZmlsbD0iIzM4YmRmOCIvPjxwYXRoIGQ9Ik01NiA2M2w1IDQtNSA0TTY0IDcyaDgiIHN0cm9rZT0iIzBiM2Q5MSIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L3N2Zz4K
     mediatype: image/svg+xml
-  replaces: shellwarden-operator.v0.1.0
+  replaces: shellwarden-operator.v0.1.1
   relatedImages:
   - name: operator
-    image: ghcr.io/denegra-ai/shellwarden-operator@sha256:d048bb8d7910cbce4dc2f0ac76c10a2b6952d96f3e9f9a417b32bb1601d71389
+    image: ghcr.io/denegra-ai/shellwarden-operator@sha256:6d515c50e42f08186fdf5d1718c53af08424a451cd5dabbdac8c0f74f889555c
   - name: openshell-gateway
-    image: ghcr.io/nvidia/openshell/gateway@sha256:f0b36dba21d282c52e498c25289658cfd6cd4f343b0069fde5609e25b002cdea
+    image: ghcr.io/nvidia/openshell/gateway@sha256:d66352a54c680b652e5ddd7d19b9c1189568d18016f360b9b8c64014f13d89c4
   - name: openshell-supervisor
-    image: ghcr.io/nvidia/openshell/supervisor@sha256:ce859a7d77ee515d3fe0b3c7dc61286516f402eb1d25c761d806d9ae5ed96c0b
+    image: ghcr.io/nvidia/openshell/supervisor@sha256:deadeacfdba6d12ca27e538d0002696369d4de5a4fcad075ab503495503af9d1
   - name: openshell-sandbox-runtime
-    image: ghcr.io/nvidia/openshell/sandbox@sha256:1038eb5c1f191fa3c34684fd7041b891c78ec570979d487f36e06e08f91bfb63
+    image: ghcr.io/nvidia/openshell/sandbox@sha256:f0fe7dbf18d833acb5da99c405231124718f23b524aa8e3c0108e6f37530033b
   - name: sandbox-base
-    image: nvcr.io/nvidia/base/ubuntu@sha256:d9461f428eea54e553add3a5158a0f245c6e1ea73efc59fff8e98e3d4a38e378
+    image: nvcr.io/nvidia/base/ubuntu@sha256:fef8f2708dbb85fbfcba6503d805397d89d9210f375362ff3b9f7888eb297ca5
   - name: agent-sandbox-controller
-    image: registry.k8s.io/agent-sandbox/agent-sandbox-controller:v1.0.9@sha256:ef1a1a3076afc996e711c44b388fbb7ffb7cd6858953d7e685166b299d77bd38
+    image: registry.k8s.io/agent-sandbox/agent-sandbox-controller:v1.0.10@sha256:594f4853913bca2b336d0267fe0978445f1aaa5837ed23797e48e745c8d6b610

@@ -4,7 +4,7 @@
 # into the resource changes what is deployed. Evidence goes to $EVIDENCE (default dist/e2e).
 set -eu
 : "${CATALOG_IMG:?}" "${VERSION:?}" "${LAB_REGISTRY:?}" "${LAB_PUSH:?}"
-OPENSHELL_VERSION=${OPENSHELL_VERSION:-0.1.6}
+OPENSHELL_VERSION=${OPENSHELL_VERSION:-0.1.8}
 EVIDENCE=${EVIDENCE:-dist/e2e}
 NS=openshell
 mkdir -p "$EVIDENCE"

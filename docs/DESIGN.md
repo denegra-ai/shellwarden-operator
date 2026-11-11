@@ -21,12 +21,12 @@ It is a community project by Denegra. It is not made, endorsed or supported by N
 ```
 OLM bundle (one CSV)
 ├── Deployment shellwarden-operator          helm-operator (operator-sdk), UBI 9
-│     reconciles  OpenShell            → upstream chart  openshell 0.1.6   (cluster: one per cluster)
+│     reconciles  OpenShell            → upstream chart  openshell 0.1.8   (cluster: one per cluster)
 │                 OpenShellWorkspace   → upstream chart  openshell-workspace (one per namespace)
-├── Deployment agent-sandbox-controller  kubernetes-sigs/agent-sandbox v1.0.9, unchanged image
+├── Deployment agent-sandbox-controller  kubernetes-sigs/agent-sandbox v1.0.10, unchanged image
 └── CRDs  openshells.openshell.denegra.ai
           openshellworkspaces.openshell.denegra.ai
-          sandboxes.agents.x-k8s.io          (from agent-sandbox v1.0.9, unchanged)
+          sandboxes.agents.x-k8s.io          (from agent-sandbox v1.0.10, unchanged)
 ```
 
 - **Helm-based, not Go.** The upstream chart is the tested description of an OpenShell install.
@@ -87,14 +87,14 @@ them.
 
 kubernetes-sigs publishes its own **agent-sandbox-operator** on OperatorHub.io
 (`k8s-operatorhub/community-operators`, 0.5.6, from `kubernetes-sigs/agent-sandbox/olm`). Its CRD
-serves `v1beta1` (storage) and `v1alpha1`; OpenShell 0.1.6 accepts either. It is **not** in
+serves `v1beta1` (storage) and `v1alpha1`; OpenShell accepts either. It is **not** in
 OpenShift's community catalog. One source builds two bundle variants (`make bundle
 AGENT_SANDBOX=required|bundled`):
 
 | Catalog | Variant | What the bundle carries |
 |---|---|---|
 | OperatorHub.io | `required` | `metadata/dependencies.yaml`: `olm.gvk agents.x-k8s.io/v1beta1 Sandbox`. OLM installs agent-sandbox-operator alongside. No CRD conflict with the operator that owns it |
-| community-operators-prod (OpenShift) | `bundled` | The `sandboxes.agents.x-k8s.io` CRD and the controller from the v1.0.9 release manifest, unchanged, as the CSV's second Deployment with upstream's ClusterRole; image from `registry.k8s.io` by digest. The CRD is an internal object, so the console does not offer it for hand creation |
+| community-operators-prod (OpenShift) | `bundled` | The `sandboxes.agents.x-k8s.io` CRD and the controller from the v1.0.10 release manifest, unchanged, as the CSV's second Deployment with upstream's ClusterRole; image from `registry.k8s.io` by digest. The CRD is an internal object, so the console does not offer it for hand creation |
 
 Why not bundle everywhere: two CSVs owning one CRD conflict in OLM, so on OperatorHub.io a user
 could not install both. Why not depend everywhere: on OpenShift there is nothing to resolve to.
@@ -147,6 +147,9 @@ Risks and the exit:
     CatalogSource (`community-operator-index:v4.20`), not a lab catalog. The same checks passed.
     Denegra TenantTab's agent sandboxes then ran on it in `operator` workspace mode: a tenant's
     order, an agent's metered model calls, and removal.
+  - 0.1.2 (2026-11-10): that 0.1.1 install upgraded in place to 0.1.2 through OLM. Every pod
+    stayed under `restricted-v2`, the sandbox started on 0.1.1 kept its pod, and a new sandbox's
+    write to `/etc` was denied.
 - Exposure: `openshiftRoute.enabled` gives a passthrough Route (the gateway terminates its own
   TLS).
 - The operator's own pods: UBI 9 minimal, non-root, no UID pinned, `RuntimeDefault` seccomp,
@@ -181,7 +184,8 @@ change Experimental interfaces within a patch.
   installed).
 - **Before each release:** install the previous bundle from a local catalog, create the CRs,
   start a sandbox, upgrade to the new bundle, and check the sandbox state survives (the gateway's
-  SQLite database lives on its PVC). `make e2e` runs the install half today.
+  SQLite database lives on its PVC). `make upgrade-e2e` does this on kind, from the previous
+  version as its catalog publishes it; `make e2e` tests a fresh install.
 - **Breaking upstream changes** (OpenShell already removed an inference route within 0.1.x) are
   called out in the CSV description's "Upgrade notes".
 

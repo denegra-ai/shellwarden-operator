@@ -9,8 +9,10 @@ A release is an operator image, pinned by digest, and one bundle per community c
   `replaces-mode`; see [DESIGN.md](DESIGN.md), "Upgrade graph").
 - If OpenShell moved, set `OPENSHELL_VERSION` and the image digests, then `make vendor` and review
   the diff against [helm-charts/PATCHES.md](../helm-charts/PATCHES.md).
-- `make validate e2e scorecard`. Before a release that replaces another, also install the previous
-  bundle, start a sandbox, upgrade, and check the sandbox survives.
+- `make validate e2e scorecard`. Before a release that replaces another, also
+  `make kind-down upgrade-e2e AGENT_SANDBOX=bundled` and the same with `required`: each installs
+  the previous version from the bundle its catalog publishes, starts a sandbox, upgrades to this
+  tree, and checks the sandbox survives.
 
 ## 2. Operator image
 
